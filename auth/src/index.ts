@@ -1,29 +1,22 @@
-import express from 'express';
-import 'express-async-errors';
-import { json } from 'body-parser';
 import mongoose from 'mongoose';
-import { currentUserRouter } from './routes/current-user';
-import { signinRouter } from './routes/signin';
-import { signoutRouter } from './routes/signout';
-import { signupRouter } from './routes/signup';
-import { errorHandler } from './middlewares/error-handler';
-import { NotFoundError } from './errors/not-found-error';
+import { app } from './app';
 
-const app = express();
-app.use(json());
+const start = async () => {
 
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(signupRouter);
+  if(!process.env.JWT_KEY){
+    throw new Error('JWT_KEY must be defined');
+  }
 
-app.all('*', async (req, res) => {
-  throw new NotFoundError();
-});
-// all use for handle any type of request method get, post etc.
+  try {
+    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
+    console.warn('connected to MongoDB');
+  } catch (err) {
+    console.error(err);
+  }
 
-app.use(errorHandler);
+  app.listen(3000, () => {
+    console.log('Listening on port 3000!');
+  });
+}
 
-app.listen(3000, () => {
-  console.log('Listening on port 3000!');
-});
+start();

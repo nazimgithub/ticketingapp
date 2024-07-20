@@ -13,7 +13,7 @@ spec:
         app: auth-mongo
     spec:
       containers:
-        - name: authauth-mongo
+        - name: auth-mongo
           image: mongo
 ---
 apiVersion: v1
@@ -22,9 +22,9 @@ metadata:
   name: auth-mongo-srv
 spec:
   selector:
-    app: auth
+    app: auth-mongo
   ports:
-    - name: auth
+    - name: db
       protocol: TCP
       port: 27017
       targetPort: 27017
